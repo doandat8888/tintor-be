@@ -59,6 +59,12 @@ module.exports = {
     }
   },
   updateUser: async (req, res, next) => {
+    const userFound = await User.findOne({
+      _id: req.params.id,
+    })
+    if(!userFound) {
+      return res.status(404).json({ message: "User not found" });
+    }
     if (!req.headers["authorization"]) {
       return res.status(400).json({
         msg: "No bearer token provided",
