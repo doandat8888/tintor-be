@@ -1,27 +1,44 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const authRoutes = require('./routes/auth');
-const cors = require('cors');
-
+const express = require("express");
 const app = express();
+const createError = require("http-errors");
+const route = require("./routes");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+require("dotenv").config();
+const db = require("./helpers/connection_mongodb");
 
-// Middleware
+db.connect();
+
+app.get("/", (req, res, next) => {
+  res.send("CLV Hackathon 2024");
+});
+
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.log(err));
+//Use router
+app.use("/api/v1", route);
 
-// Routes
-app.use('/api/v1/auth', authRoutes);
+app.use((req, res, next) => {
+  next(createError.NotFound("Route doesn't exist"));
+});
 
-app.get('/', (req, res) => res.send('Hello world'));
+app.use((err, req, res, next) => {
+  res.json({
+    status: err.status || 500,
+    message: err.message,
+  });
+});
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 8080;
+
+
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
+});
+
