@@ -6,11 +6,11 @@ module.exports = {
   getListUser: async (req, res, next) => {
     try {
       const users = await User.find();
-      if(users) {
+      if (users) {
         const userInfos = users.map((user) => {
-          const { password, isFirstLogin,...userInfo } = user._doc;
+          const { password, isFirstLogin, ...userInfo } = user._doc;
           return userInfo;
-        })
+        });
         return res.status(200).json({
           data: userInfos,
         });
@@ -54,6 +54,50 @@ module.exports = {
         });
       }
     } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  },
+  updateUser: async (req, res, next) => {
+    if (!req.headers["authorization"]) {
+      return res.status(400).json({
+        msg: "No bearer token provided",
+      });
+    }
+    const authHeader = req.headers["authorization"];
+    const bearerToken = authHeader.split(" ");
+    const token = bearerToken[1];
+    try {
+      const payload = await verifyAccessToken(token);
+      const { userId } = payload;
+      //Check if user can update info
+      if (userId !== req.params.id) {
+        return res.status(403).json({
+          msg: "Unauthorized",
+        });
+      }
+      const staticFields = ["email", "_id", "__v", "role"];
+      const updates = Object.keys(req.body).reduce((acc, key) => {
+        if (staticFields.includes(key)) {
+          return;
+        }
+        acc[key] = req.body[key];
+        return acc;
+      }, {});
+
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { $set: updates },
+        { new: true } // Return new record after update
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.status(200).json(user);
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   },
