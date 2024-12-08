@@ -6,6 +6,7 @@ const userController = require('../controllers/user');
 route.get('/', verifyAccessTokenMiddleWare, userController.getListUser);
 route.get('/current', userController.getCurrentUser);
 route.get('/:id', verifyAccessTokenMiddleWare, userController.getUserById);
+route.patch('/:id', userController.updateUser);
 
 module.exports = route;
 
