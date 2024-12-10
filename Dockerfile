@@ -1,6 +1,6 @@
 FROM node:alpine AS development
 
-WORKDIR /tintor-be/user-mgmt
+WORKDIR /tintor-be
 
 COPY package.json .
 
