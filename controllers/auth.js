@@ -5,7 +5,7 @@ const { signAccessToken, signRefreshToken } = require("../helpers/jwt_service");
 module.exports = {
   register: async (req, res, next) => {
     try {
-      const { email, password, fullName, role } = req.body;
+      const { email, password, fullName } = req.body;
       const { error } = userValidate(req.body);
       if (error) {
         console.log("Error: ", error.details[0].message);
@@ -24,7 +24,7 @@ module.exports = {
         email,
         password,
         fullName,
-        role,
+        role: 'unknown',
         isFirstLogin: true,
       });
 
@@ -47,7 +47,7 @@ module.exports = {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return res.json({
+        return res.json({ 
           msg: "Missing email or password",
         });
       }

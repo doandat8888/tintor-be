@@ -5,7 +5,16 @@ const { verifyAccessToken } = require("../helpers/jwt_service");
 module.exports = {
   getListUser: async (req, res, next) => {
     try {
-      const users = await User.find();
+      const { role, isActive, searchText } = req.query; 
+
+      const filter = {
+        ...(role && { role }), 
+        ...(isActive && { isActive: isActive === 'true' }),
+        ...(searchText && { fullName: { $regex: searchText, $options: 'i' } }),
+      };
+
+      const users = await User.find(filter);
+
       if (users) {
         const userInfos = users.map((user) => {
           const { password, isFirstLogin, ...userInfo } = user._doc;
@@ -48,7 +57,7 @@ module.exports = {
         _id: userId,
       });
       if (user) {
-        const { password, isFirstLogin, ...userInfo } = user._doc;
+        const { password, ...userInfo } = user._doc;
         return res.status(200).json({
           data: userInfo,
         });
@@ -82,7 +91,7 @@ module.exports = {
           msg: "Unauthorized",
         });
       }
-      const staticFields = ["email", "_id", "__v", "role"];
+      const staticFields = ["email", "_id", "__v",];
       const updates = Object.keys(req.body).reduce((acc, key) => {
         if (staticFields.includes(key)) {
           return;
