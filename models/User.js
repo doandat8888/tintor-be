@@ -12,9 +12,12 @@ const UserSchema = mongoose.Schema({
   skills: { type: String, required: false },
   phoneNumber: { type: String, required: false },
   avatar: { type: String, required: false },
-  learningGoals: { type: String, required: false },
+  learningGoal: { type: String, required: false },
   isActive: { type: Boolean, require: false, default: true },
-  isFirstLogin: { type: Boolean, require: false }
+  isFirstLogin: { type: Boolean, require: false },
+  experience: { type: Number, required: false },
+  availability: { type: String, required: false },
+  interest: { type: String, required: false },
 });
 
 //Check presave user
