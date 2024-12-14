@@ -9,7 +9,7 @@ const UserSchema = mongoose.Schema({
   employeeNumber: { type: String, required: false },
   dateOfBirth: { type: String, required: false },
   department: { type: String, required: false },
-  skills: { type: String, required: false },
+  skills: { type: [String], required: false },
   phoneNumber: { type: String, required: false },
   avatar: { type: String, required: false },
   learningGoal: { type: String, required: false },

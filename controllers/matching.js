@@ -3,6 +3,7 @@ const axios = require('axios');
 module.exports = {
   getMatchingResults: async(req, res) => {
     const {
+      employeeID,
       skills,
       experience,
       department,
@@ -15,6 +16,7 @@ module.exports = {
     try {
       // Call Matching Service API with provided parameters
       const response = await axios.post(`${process.env.TINTOR_MATCHING_URL}/predict`, {
+        employeeID,
         skills,
         experience,
         department,
