@@ -5,7 +5,7 @@ const userValidate = (data) => {
     email: Joi.string().email().lowercase().required(), 
     password: Joi.string().max(50).min(6).required(),
     fullName: Joi.string().max(50).required(),
-    role: Joi.string().required(),
+    role: Joi.string(),
     employeeNumber: Joi.string().optional(),
     dateOfBirth: Joi.string().isoDate().optional(),
     department: Joi.string().optional(),

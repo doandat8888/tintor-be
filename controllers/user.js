@@ -17,7 +17,7 @@ module.exports = {
 
       if (users) {
         const userInfos = users.map((user) => {
-          const { password, isFirstLogin, ...userInfo } = user._doc;
+          const { password, ...userInfo } = user._doc;
           return userInfo;
         });
         return res.status(200).json({
